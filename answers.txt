@@ -1,1 +1,9 @@
 Answers to the text questions go here.
+
+(d) When is the Flesch Kincaid score *not* a valid, robust or reliable estimator of text diﬀiculty? Give two conditions. (Text answer, 200 words maximum).
+
+Answer: The Flesch Kincaid score is based on the sentence length and average syllables per word. This means that while is can be a useful indicator to compare texts, it may not be a valid, robust or relibale estimator of text difficulty where the ration between those is abnormal. 
+
+1. The score will not reliably estimate the difficulty in other languages than English. Some languages (e.g. German) may commonly use longer words and sentences, that are not necessarliy perecived as more difficult for people fluent in those languages. Another example is languages that use non-latin alphabets (e.g. Japanese or Chinese) and hence may always have relatively "short" sentences, irrespective of the complexity of the text. 
+
+2. The measure does not take into account how difficult a word is directly perceived. For example, a text that uses short, but uncommon and lesser known words may be perceived as complicated and not-at-all easy to follow. But due to the ratio, the score could grade it as very easy. Equally, longer words that are commonly used and generally known, may represent "difficulty" for the test, but in fact be easy to follow for most people within the grading system. 
