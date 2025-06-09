@@ -4,6 +4,7 @@
 
 import nltk
 import spacy
+import pandas as pd
 from pathlib import Path
 
 
@@ -43,7 +44,27 @@ def count_syl(word, d):
 def read_novels(path=Path.cwd() / "texts" / "novels"):
     """Reads texts from a directory of .txt files and returns a DataFrame with the text, title,
     author, and year"""
-    pass
+    data = []
+    for file_path in path.glob("*.txt"):
+        with open(file_path, "r", encoding="utf-8") as f:
+            text = f.read()
+        
+        filename = file_path.stem
+        try:
+            nov_title, nov_author, nov_year = filename.split("-")
+        except ValueError:
+            continue
+
+        data.append({
+            "title": title,
+            "author": author,
+            "year": year,
+            "text": text
+        })
+
+        df = pd.DataFrame(data)
+
+        return df.sort_values(by="year").reset_index(drop=True)
 
 
 def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
