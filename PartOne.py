@@ -6,6 +6,9 @@ import nltk
 import spacy
 import pandas as pd
 from pathlib import Path
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import cmudict
+import re
 
 
 nlp = spacy.load("en_core_web_sm")
@@ -75,7 +78,11 @@ def parse(df, store_path=Path.cwd() / "pickles", out_name="parsed.pickle"):
 
 def nltk_ttr(text):
     """Calculates the type-token ratio of a text. Text is tokenized using nltk.word_tokenize."""
-    pass
+    tokens = word_tokenize(text)
+    words = [token.lower() for token in tokens if token.isalpha()]
+    num_tokens = len(words)
+    num_types = len(set(words))
+    return num_types/num_tokens if num_tokens > 0 else 0
 
 
 def get_ttrs(df):
