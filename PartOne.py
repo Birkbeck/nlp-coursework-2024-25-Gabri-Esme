@@ -13,7 +13,7 @@ import re
 
 nlp = spacy.load("en_core_web_sm")
 nlp.max_length = 2000000
-
+nltk.download('cmudict')
 
 
 def fk_level(text, d):
@@ -27,8 +27,18 @@ def fk_level(text, d):
     Returns:
         float: The Flesch-Kincaid Grade Level of the text. (higher grade is more difficult)
     """
-    pass
+    sents = sent_tokenize(text)
+    words = [w for sent in sents for w in word_tokenize(sent) if w.isalpha()]
 
+    total_sents = len(sents)
+    total_words = len(words)
+    total_syls = sum(count_syl(w, d) for w in words)
+
+    if total_sents == 0 or total_words == 0:
+        return 0.0
+    return 0.39 * (total_words/total_sents) + 11.8 * (total_syls/total_words) - 15.59
+
+    
 
 def count_syl(word, d):
     """Counts the number of syllables in a word given a dictionary of syllables per word.
@@ -41,7 +51,12 @@ def count_syl(word, d):
     Returns:
         int: The number of syllables in the word.
     """
-    pass
+    word = word.lower()
+    if word in d:
+        return [len([ph for ph in pron if ph[-1].isdigit()]) for pron in d[word]][0]
+    else:
+        syls = re.findall(r'[aeiouy]+', word)
+        return max(1, len(syls))
 
 
 def read_novels(path=Path.cwd() / "texts" / "novels"):
