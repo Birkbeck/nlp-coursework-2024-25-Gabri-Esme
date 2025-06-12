@@ -8,6 +8,7 @@ import pandas as pd
 from pathlib import Path
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import cmudict
+from collections import Counter
 import re
 import os
 
@@ -132,9 +133,22 @@ def subjects_by_verb_count(doc, verb):
 
 
 
-def adjective_counts(doc):
+def objects_counts(doc):
     """Extracts the most common adjectives in a parsed document. Returns a list of tuples."""
-    pass
+    results = {}
+
+    for i, row in df.iterrows():
+        doc = row['parsed']
+        objects = []
+        for token in doc:
+            if token.dep_ in ("obj", "dobj", "pobj"):
+                objects.append(token.text.lower())
+    
+        top_10 = Counter(objects).most_common(10)
+        results[row['title']] = top_10
+    
+    return results
+    
 
 
 
@@ -151,8 +165,8 @@ if __name__ == "__main__":
     # print(df.head())
     # print(get_ttrs(df))
     # print(get_fks(df))
-    # df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
-    # print(adjective_counts(df))
+    #df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
+    #print(objects_counts(df))
     """ 
     for i, row in df.iterrows():
         print(row["title"])
