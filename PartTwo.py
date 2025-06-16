@@ -24,5 +24,7 @@ print(df['party'].unique())
 df = df[df['speech_class'].isin(['Speech'])]
 print(df['speech_class'].unique())
 
+#iv.
+df = df[df['speech'].str.len() >= 1000]
 
 
