@@ -8,7 +8,9 @@ import pandas as pd
 from pathlib import Path
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import cmudict
+from nltk.collocations import BigramCollocationFinder, BigramAssocMeasures
 from collections import Counter
+from math import log2
 import re
 import os
 
@@ -123,8 +125,36 @@ def get_fks(df):
 
 def subjects_by_verb_pmi(doc, target_verb):
     """Extracts the most common subjects of a given verb in a parsed document. Returns a list."""
-    pass
+    subj_count = Counter()
+    verb_count = Counter()
+    pair_count = Counter()
 
+    all_lemmas = [token.lemma_.lower() for token in doc if token.is_alpha]
+    counted_lemmas = Counter(all_lemmas)
+
+    pairs = []
+    for token in doc: 
+        if token.lemma_ == target_verb and token.pos_ == "VERB":
+            for child in token.children:
+                if child.dep_ in ("nsubj", "nsubjpass", "csubj"):
+                    subj = child.lemma_.lower()
+                    verb = target_verb
+                    pairs.append((subj, verb))
+                    pair_count[(subj, verb)] += 1
+    
+    sum_pairs = sum(pair_count.values())
+    results = []
+
+    for (subj, verb), count in pair_count.items():
+        p_subj = counted_lemmas[subj] / len(all_lemmas)
+        p_verb = counted_lemmas[verb] / len(all_lemmas)
+        p_pair = count / sum_pairs
+
+        if p_subj > 0 and p_verb > 0 and p_pair > 0: 
+            pmi = log2(p_pair / (p_subj * p_verb))
+            results.append((subj, pmi))
+    
+    return sorted(results, key=lambda x: x[1], reverse=True)[:10]
 
 
 def subjects_by_verb_count(doc, verb):
@@ -139,7 +169,6 @@ def subjects_by_verb_count(doc, verb):
 
     top_10 = Counter(subjects).most_common(10)
     return top_10
-
 
 def objects_counts(doc):
     """Extracts the most common adjectives in a parsed document. Returns a list of tuples."""
@@ -156,8 +185,6 @@ def objects_counts(doc):
         results[row['title']] = top_10
     
     return results
-    
-
 
 
 if __name__ == "__main__":
@@ -176,13 +203,14 @@ if __name__ == "__main__":
     df = pd.read_pickle(Path.cwd() / "pickles" /"parsed.pickle")
     #print(objects_counts(df))
 
+    '''
     for i, row in df.iterrows():
         print(row["title"])
         print(subjects_by_verb_count(row["parsed"], "hear"))
-        print("\n")
+        print("\n")'''
     
-    # for i, row in df.iterrows():
-    #     print(row["title"])
-    #     print(subjects_by_verb_pmi(row["parsed"], "hear"))
-    #     print("\n")
+    for i, row in df.iterrows():
+        print(row["title"])
+        print(subjects_by_verb_pmi(row["parsed"], "hear"))
+        print("\n")
 
