@@ -20,5 +20,9 @@ Liberal Democrat                      803'''
 df = df[df['party'].isin(['Conservative', 'Labour', 'Scottish National Party', 'Liberal Democrat'])]
 print(df['party'].unique())
 
+#iii.
+df = df[df['speech_class'].isin(['Speech'])]
+print(df['speech_class'].unique())
+
 
 
