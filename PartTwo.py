@@ -60,4 +60,28 @@ svm_pred = svm.predict(X_test)
 print("SVM Evaluation:", f1_score(y_test, svm_pred, average='macro'))
 print(classification_report(y_test, svm_pred))
 
+# (d)
+vect = TfidfVectorizer(ngram_range=(1, 3), max_features=3000)
+X = vect.fit_transform(df['speech'])
+y = df['party']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,y,
+    stratify=y,
+    random_state=26 
+)
+
+# RandomForest
+rf = RandomForestClassifier(n_estimators=300)
+rf.fit(X_train, y_train)
+rf_pred = rf.predict(X_test)
+print("Random Forest Evaluation:", f1_score(y_test, rf_pred, average='macro'))
+print(classification_report(y_test, rf_pred))
+
+# SVM
+svm = SVC(kernel='linear')
+svm.fit(X_train, y_train)
+svm_pred = svm.predict(X_test)
+print("SVM Evaluation:", f1_score(y_test, svm_pred, average='macro'))
+print(classification_report(y_test, svm_pred))
 
