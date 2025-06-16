@@ -1,4 +1,6 @@
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
 
 # Part Two
 # (a)
@@ -25,5 +27,19 @@ df = df[df['speech_class'].isin(['Speech'])]
 df = df[df['speech'].str.len() >= 1000]
 
 print(df.shape)
+
+# (b)
+vect = TfidfVectorizer(max_features=3000)
+tfidf_matrix = vect.fit_transform(df['speech'])
+
+# Stratified sampling
+X = df['speech']
+y = df['party']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,y,
+    stratify=y,
+    random_state=26 
+)
 
 
