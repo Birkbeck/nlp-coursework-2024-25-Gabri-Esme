@@ -30,10 +30,9 @@ print(df.shape)
 
 # (b)
 vect = TfidfVectorizer(max_features=3000)
-tfidf_matrix = vect.fit_transform(df['speech'])
+X = vect.fit_transform(df['speech'])
 
 # Stratified sampling
-X = df['speech']
 y = df['party']
 
 X_train, X_test, y_train, y_test = train_test_split(
@@ -42,4 +41,9 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=26 
 )
 
+# (c)
+
+# RandomForest
+
+# SVM
 
